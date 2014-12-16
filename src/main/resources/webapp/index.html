@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="logViewerApp">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>NAT Log Viewer</title>
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/jquery-ui.min.css" rel="stylesheet">
+    <link href="css/jquery-ui.theme.min.css" rel="stylesheet">
+    <link href="css/jquery-ui.structure.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="lib/html5shiv.min.js"></script>
+    <script src="lib/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="row">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">NAT Event Logger</a>
+        </div>
+    </div>
+</nav>
+
+<div class="row">
+    <div class="col-md-2 ">
+        <div class="filter">
+            <fieldset>
+                <div class="form-group">
+                    <label class="control-label" for="date">Date:</label>
+                    <br />
+                    <div>
+                        <input id="date" name="date" class="form-control input-md" type="text">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label" for="srcIp">Source IP:</label>
+                    <div>
+                        <select id="eventType" name="eventType" class="form-control input-md">
+                            <option value="all" selected="selected">All</option>
+                            <option value="0">TCP_SYN</option>
+                            <option value="1">UDP</option>
+                            <option value="2">ICMP</option>
+                            <option value="3">TCP_ACK</option>
+                            <option value="4">TCP_ACK_PSH</option>
+                            <option value="5">PROTO41</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label" for="srcIp">Source IP:</label>
+                    <div>
+                        <input id="srcIp" name="srcIp" class="form-control input-md" type="text" placeholder="x.x.x.x">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label" for="dstIp">Destination IP:</label><br/>
+                    <div>
+                        <input id="dstIp" name="dstIp" class="form-control input-md" type="text" placeholder="x.x.x.x">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label" for="btnSearch"></label>
+                    <div>
+                        <button type="submit" id="btnSearch" class="btn btn-primary right">Search</button>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+    <div class="col-md-10">
+        <h3>Log records:</h3>
+        <div id="logContainer" class="logs">No data for current selection.</div>
+    </div>
+</div>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="lib/jquery.min.js"></script>
+<script src="lib/bootstrap.min.js"></script>
+<script src="lib/jquery-ui.min.js"></script>
+
+<script src="js/logViewer.js"></script>
+
+</body>
+</html>

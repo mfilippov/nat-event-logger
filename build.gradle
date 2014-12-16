@@ -1,0 +1,33 @@
+buildscript {
+    ext.kotlin_version = "0.9.976"
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+apply plugin: "kotlin"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    compile "io.netty:netty-all:4.0.24.Final"
+    compile "javax:javaee-api:7.0"
+    compile "org.glassfish.jersey.containers:jersey-container-servlet-core:2.14"
+    compile "org.eclipse.jetty:jetty-webapp:9.2.6.v20141205"
+
+    testCompile 'junit:junit:4.11'
+}
+
+jar {
+    manifest {
+        attributes "Main-Class": "me.filippov.nat.event.logger.LoggerPackage"
+    }
+
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+}

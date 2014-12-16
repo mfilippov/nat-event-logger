@@ -1,0 +1,10 @@
+*.class
+out/
+target/
+src/main/resources/META-INF/MANIFEST.MF
+.idea/
+*.pyc
+*.iml
+.gradle
+build/*
+log/*
