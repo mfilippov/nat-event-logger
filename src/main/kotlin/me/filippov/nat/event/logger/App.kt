@@ -13,8 +13,29 @@ import java.nio.file.Paths
 import java.util.*
 
 
-fun main(args : Array<String>) {
+fun main(args: Array<String>) {
     val group = NioEventLoopGroup();
+
+    var defaultLogPort = 514
+    var defaultWebPort = 8888
+
+    if (args.size == 1 && (args[0] == "--help" || args[0] == "-help")) {
+        println("Usage: <Program> [logPort] [webPort]")
+        return
+    }
+
+    if (args.size == 2) {
+        defaultLogPort = try {
+            Integer.parseInt(args[0])
+        } catch(ex: NumberFormatException) {
+            514
+        }
+        defaultWebPort = try {
+            Integer.parseInt(args[1])
+        } catch(ex: NumberFormatException) {
+            8888
+        }
+    }
 
     try {
         val b = Bootstrap();
@@ -28,7 +49,7 @@ fun main(args : Array<String>) {
         p.setProperty("org.eclipse.jetty.LEVEL", "WARN");
         StdErrLog.setProperties(p);
 
-        val server = Server(8888)
+        val server = Server(defaultWebPort)
 
         val ctx = WebAppContext(LogResource::class.java.classLoader.getResource("webapp/").toExternalForm(), "/")
         ctx.welcomeFiles = arrayOf("index.html")
@@ -37,14 +58,14 @@ fun main(args : Array<String>) {
 
         val jerseyServlet = ctx.addServlet(ServletContainer::class.java, "/api/*");
         jerseyServlet.initOrder = 0;
-        jerseyServlet.setInitParameter("jersey.config.server.provider.packages","me.filippov.nat.event.logger");
+        jerseyServlet.setInitParameter("jersey.config.server.provider.packages", "me.filippov.nat.event.logger");
 
-        val staticServlet = ctx.addServlet(DefaultServlet::class.java,"/*");
+        val staticServlet = ctx.addServlet(DefaultServlet::class.java, "/*");
         staticServlet.initOrder = 1;
 
         server.start()
 
-        b.bind(514).sync().channel().closeFuture().await();
+        b.bind(defaultLogPort).sync().channel().closeFuture().await();
     } finally {
         group.shutdownGracefully();
     }
