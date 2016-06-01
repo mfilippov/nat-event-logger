@@ -1,17 +1,16 @@
 package me.filippov.nat.event.logger
 
-import org.eclipse.jetty.servlet.ServletContextHandler
-import org.eclipse.jetty.server.Server
-import java.util.Properties
-import io.netty.channel.socket.nio.NioDatagramChannel
 import io.netty.bootstrap.Bootstrap
 import io.netty.channel.nio.NioEventLoopGroup
-import org.glassfish.jersey.servlet.ServletContainer
+import io.netty.channel.socket.nio.NioDatagramChannel
+import org.eclipse.jetty.server.Server
 import org.eclipse.jetty.servlet.DefaultServlet
-import org.eclipse.jetty.webapp.WebAppContext
 import org.eclipse.jetty.util.log.StdErrLog
+import org.eclipse.jetty.webapp.WebAppContext
+import org.glassfish.jersey.servlet.ServletContainer
 import java.nio.file.Files
 import java.nio.file.Paths
+import java.util.*
 
 
 fun main(args : Array<String>) {
@@ -20,7 +19,7 @@ fun main(args : Array<String>) {
     try {
         val b = Bootstrap();
         b.group(group)
-                .channel(javaClass<NioDatagramChannel>())
+                .channel(NioDatagramChannel::class.java)
                 .handler(LogChannelInitializer());
         if (!Files.exists(Paths.get("logs"))) {
             Files.createDirectory(Paths.get("logs"))
@@ -31,17 +30,17 @@ fun main(args : Array<String>) {
 
         val server = Server(8888)
 
-        val ctx = WebAppContext(javaClass<LogResource>().getClassLoader().getResource("webapp/").toExternalForm(), "/")
-        ctx.setWelcomeFiles(array("index.html"))
+        val ctx = WebAppContext(LogResource::class.java.classLoader.getResource("webapp/").toExternalForm(), "/")
+        ctx.welcomeFiles = arrayOf("index.html")
 
-        server.setHandler(ctx)
+        server.handler = ctx
 
-        val jerseyServlet = ctx.addServlet(javaClass<ServletContainer>(), "/api/*");
-        jerseyServlet.setInitOrder(0);
+        val jerseyServlet = ctx.addServlet(ServletContainer::class.java, "/api/*");
+        jerseyServlet.initOrder = 0;
         jerseyServlet.setInitParameter("jersey.config.server.provider.packages","me.filippov.nat.event.logger");
 
-        val staticServlet = ctx.addServlet(javaClass<DefaultServlet>(),"/*");
-        staticServlet.setInitOrder(1);
+        val staticServlet = ctx.addServlet(DefaultServlet::class.java,"/*");
+        staticServlet.initOrder = 1;
 
         server.start()
 

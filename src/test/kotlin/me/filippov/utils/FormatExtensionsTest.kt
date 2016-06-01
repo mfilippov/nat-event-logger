@@ -1,12 +1,12 @@
 package me.filippov.utils
 
+import org.junit.Assert
 import org.junit.Test
-import kotlin.test.assertEquals
 
 class FormatExtensionsTest {
 
-    Test fun shouldPReturnFormattedString() {
-        assertEquals("010", 10.format("%03d"))
+    @Test fun shouldPReturnFormattedString() {
+        Assert.assertEquals("010", 10.format("%03d"))
     }
 
 }

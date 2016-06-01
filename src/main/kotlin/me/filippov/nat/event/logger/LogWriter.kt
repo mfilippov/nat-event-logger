@@ -1,24 +1,23 @@
 package me.filippov.nat.event.logger
 
+import me.filippov.utils.format
+import me.filippov.utils.toBytes
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.nio.file.StandardOpenOption
-import me.filippov.utils.format
-import me.filippov.utils.toBytes
-import me.filippov.utils.toUnixTime
 
 class LogWriter {
-    class object {
+    companion object {
         fun writeLog(msg: LogMessage) {
-            var array = kotlin.ByteArray(16)
-            val src = msg.src.getAddress()
+            val array = kotlin.ByteArray(16)
+            val src = msg.src.address
             val srcPort = msg.srcPort.toBytes()
-            val dst = msg.dst.getAddress()
+            val dst = msg.dst.address
             val dstPort = msg.dstPort.toBytes()
 
-            array[0] = msg.time.getHour().toByte()
-            array[1] = msg.time.getMinute().toByte()
-            array[2] = msg.time.getSecond().toByte()
+            array[0] = msg.time.hour.toByte()
+            array[1] = msg.time.minute.toByte()
+            array[2] = msg.time.second.toByte()
 
             array[3] = msg.eventType.value
 
@@ -35,7 +34,7 @@ class LogWriter {
             array[14] = dstPort.first
             array[15] = dstPort.second
 
-            Files.write(Paths.get("logs/${msg.time.getYear()}-${msg.time.getMonthValue().format("%02d")}-${msg.time.getDayOfMonth().format("%02d")}.natlog"), array, StandardOpenOption.APPEND, StandardOpenOption.CREATE)
+            Files.write(Paths.get("logs/${msg.time.year}-${msg.time.monthValue.format("%02d")}-${msg.time.dayOfMonth.format("%02d")}.natlog"), array, StandardOpenOption.APPEND, StandardOpenOption.CREATE)
         }
     }
 }
