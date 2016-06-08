@@ -26,7 +26,7 @@ dependencies {
 
 jar {
     manifest {
-        attributes "Main-Class": "me.filippov.nat.event.logger.LoggerPackage"
+        attributes "Main-Class": "me.filippov.nat.event.logger.AppKt"
     }
 
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
