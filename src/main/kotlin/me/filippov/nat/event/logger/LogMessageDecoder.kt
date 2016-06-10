@@ -10,11 +10,11 @@ import java.time.LocalDateTime
 
 class LogMessageDecoder(val timestampProvider: () -> LocalDateTime) : MessageToMessageDecoder<DatagramPacket>() {
     private val tcpSynPattern = Pattern.compile("""^firewall,info\ssrcnat:\sin:\(none\)\sout:.+,\ssrc-mac\s\S{2}:\S{2}:\S{2}:\S{2}:\S{2}:\S{2},\sproto\sTCP\s\(SYN\),\s(\d+\.\d+\.\d+\.\d+):(\d+)->(\d+\.\d+\.\d+\.\d+):(\d+),\s(prio\s\d->\d,\s)?len\s\d+$""")
-    private val tcpAckPattern = Pattern.compile("""^firewall,info\ssrcnat:\sin:\(none\)\sout:sfp-plus2,\ssrc-mac\s\S{2}:\S{2}:\S{2}:\S{2}:\S{2}:\S{2},\sproto\sTCP\s\(ACK\),\s(\d+\.\d+\.\d+\.\d+):(\d+)->(\d+\.\d+\.\d+\.\d+):(\d+),\s(prio\s\d->\d,\s)?len\s\d+$""")
-    private val tcpAckPshPattern = Pattern.compile("""^firewall,info\ssrcnat:\sin:\(none\)\sout:sfp-plus2,\ssrc-mac\s\S{2}:\S{2}:\S{2}:\S{2}:\S{2}:\S{2},\sproto\sTCP\s\(ACK,PSH\),\s(\d+\.\d+\.\d+\.\d+):(\d+)->(\d+\.\d+\.\d+\.\d+):(\d+),\s(prio\s\d->\d,\s)?len\s\d+$""")
-    private val udpPattern = Pattern.compile("""^firewall,info\ssrcnat:\sin:\(none\)\sout:sfp-plus2,\ssrc-mac\s\S{2}:\S{2}:\S{2}:\S{2}:\S{2}:\S{2},\sproto\sUDP,\s(\d+\.\d+\.\d+\.\d+):(\d+)->(\d+\.\d+\.\d+\.\d+):(\d+),\s(prio\s\d->\d,\s)?len\s\d+$""")
-    private val icmpPattern = Pattern.compile("""^firewall,info\ssrcnat:\sin:\(none\)\sout:sfp-plus2,\ssrc-mac\s\S{2}:\S{2}:\S{2}:\S{2}:\S{2}:\S{2},\sproto\sICMP,\s(\d+\.\d+\.\d+\.\d+):(\d+)->(\d+\.\d+\.\d+\.\d+):(\d+),\s(prio\s\d->\d,\s)?len\s\d+$""")
-    private val proto41Pattern = Pattern.compile("""^firewall,info\ssrcnat:\sin:\(none\)\sout:sfp-plus2,\ssrc-mac\s\S{2}:\S{2}:\S{2}:\S{2}:\S{2}:\S{2},\sproto\s41,\s(\d+\.\d+\.\d+\.\d+):(\d+)->(\d+\.\d+\.\d+\.\d+):(\d+),\s(prio\s\d->\d,\s)?len\s\d+$""")
+    private val tcpAckPattern = Pattern.compile("""^firewall,info\ssrcnat:\sin:\(none\)\sout:.+,\ssrc-mac\s\S{2}:\S{2}:\S{2}:\S{2}:\S{2}:\S{2},\sproto\sTCP\s\(ACK\),\s(\d+\.\d+\.\d+\.\d+):(\d+)->(\d+\.\d+\.\d+\.\d+):(\d+),\s(prio\s\d->\d,\s)?len\s\d+$""")
+    private val tcpAckPshPattern = Pattern.compile("""^firewall,info\ssrcnat:\sin:\(none\)\sout:.+,\ssrc-mac\s\S{2}:\S{2}:\S{2}:\S{2}:\S{2}:\S{2},\sproto\sTCP\s\(ACK,PSH\),\s(\d+\.\d+\.\d+\.\d+):(\d+)->(\d+\.\d+\.\d+\.\d+):(\d+),\s(prio\s\d->\d,\s)?len\s\d+$""")
+    private val udpPattern = Pattern.compile("""^firewall,info\ssrcnat:\sin:\(none\)\sout:.+,\ssrc-mac\s\S{2}:\S{2}:\S{2}:\S{2}:\S{2}:\S{2},\sproto\sUDP,\s(\d+\.\d+\.\d+\.\d+):(\d+)->(\d+\.\d+\.\d+\.\d+):(\d+),\s(prio\s\d->\d,\s)?len\s\d+$""")
+    private val icmpPattern = Pattern.compile("""^firewall,info\ssrcnat:\sin:\(none\)\sout:.+,\ssrc-mac\s\S{2}:\S{2}:\S{2}:\S{2}:\S{2}:\S{2},\sproto\sICMP\s\(type\s8,\scode\s0\),\s(\d+\.\d+\.\d+\.\d+)->(\d+\.\d+\.\d+\.\d+),\s(prio\s\d->\d,\s)?len\s\d+$""")
+    private val proto41Pattern = Pattern.compile("""^firewall,info\ssrcnat:\sin:\(none\)\sout:.+,\ssrc-mac\s\S{2}:\S{2}:\S{2}:\S{2}:\S{2}:\S{2},\sproto\s41,\s(\d+\.\d+\.\d+\.\d+)->(\d+\.\d+\.\d+\.\d+),\s(prio\s\d->\d,\s)?len\s\d+$""")
 
     public override fun decode(ctx: ChannelHandlerContext?, msg: DatagramPacket?, out: MutableList<Any>?) {
         val log = msg?.content()?.toString(Charset.forName("UTF-8"))

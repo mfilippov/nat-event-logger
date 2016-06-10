@@ -59,6 +59,29 @@ class LogMessageDecoderTest {
         Assert.assertEquals(23224, result.dstPort)
     }
 
+    @Test fun ShouldDecodeUdpLogPrio(){
+        val log ="firewall,info srcnat: in:(none) out:Wi-Fi NAT outside, src-mac 00:22:56:b8:00:bf, proto UDP, 10.97.5.10:61916->8.8.8.8:53, prio 1->0, len 72"
+        val packet = DatagramPacket(Unpooled.wrappedBuffer(log.toByteArray()), InetSocketAddress(514))
+        val queue = LinkedBlockingDeque<LogMessage>();
+        val channel = EmbeddedChannel(LogMessageDecoder({LocalDateTime.of(2014, 1, 1, 0, 0, 0)}), object : SimpleChannelInboundHandler<LogMessage>() {
+            override fun channelRead0(ctx: ChannelHandlerContext?, msg: LogMessage?) {
+                queue.add(msg)
+            }
+
+        });
+        Assert.assertFalse(channel.writeInbound(packet))
+        channel.finish()
+        Assert.assertEquals(1, queue.size)
+        val result = queue.take()
+        Assert.assertNotNull(result)
+        Assert.assertEquals(LocalDateTime.of(2014, 1, 1, 0, 0, 0), result.time)
+        Assert.assertEquals(EventType.UDP, result.eventType)
+        Assert.assertEquals("10.97.5.10", result.src.hostAddress)
+        Assert.assertEquals(61916, result.srcPort)
+        Assert.assertEquals("8.8.8.8", result.dst.hostAddress)
+        Assert.assertEquals(53, result.dstPort)
+    }
+
     @Test fun ShouldDecodeIcmpLog(){
         val log ="firewall,info srcnat: in:(none) out:sfp-plus2, src-mac 00:25:84:d6:40:3f, proto ICMP (type 8, code 0), 100.64.0.213->77.234.40.55, len 60"
         val packet = DatagramPacket(Unpooled.wrappedBuffer(log.toByteArray()), InetSocketAddress(514))
